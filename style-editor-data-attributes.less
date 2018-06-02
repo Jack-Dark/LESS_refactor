@@ -1,0 +1,106 @@
+.generate-data-attribute(@data-attribute: ''; @data-value: ''; @data-attribute-type: '';@data-value-type: '';) {
+	[data-se~="@{data-attribute}(@{data-value})"] {
+		.when-attribute-and-value-matches(color, {
+			& when (@data-attribute = bgc) {
+				background-color: @@data-value;
+				color: contrast(@@data-value);
+			}
+			& when (@data-attribute = bgc--hover) {
+				&:hover {
+					background-color: @@data-value;
+					color: contrast(@@data-value);
+				}
+			}
+			& when (@data-attribute = bgc--focus) {
+				&:focus {
+					background-color: @@data-value;
+					color: contrast(@@data-value);
+				}
+			}
+			& when (@data-attribute = c) {
+				color: @@data-value;
+			}
+			& when (@data-attribute = c--hover) {
+				&:hover {
+					color: @@data-value;
+				}
+			}
+			& when (@data-attribute = c--focus) {
+				&:focus {
+					color: @@data-value;
+				}
+			}
+			});
+		.when-attribute-and-value-matches(font-family, {
+			font-family: @@data-value;
+			});
+		.when-attribute-and-value-matches(font-weight, {
+			font-weight: @data-value;
+			});
+	}
+}
+.when-attribute-and-value-matches(@phrase:''; @detached-ruleset: {};){
+	& when (@data-attribute-type = @phrase){
+		& when (@data-value-type = @phrase){
+			@detached-ruleset();
+		}
+	}
+};
+
+
+
+.loop-attributes-array(@attributes-i: length(@attributes-array)) when (@attributes-i > 0) {
+	.loop-attributes-array(@attributes-i - 1);
+	@attributes: extract(@attributes-array, @attributes-i);
+	@this-attribute-type: extract(@attributes, 1);
+	@this-attribute: extract(@attributes, 2);
+    // call colors array loop mixin
+    .loop-variables-array(@data-attribute: @this-attribute; @data-attribute-type: @this-attribute-type);
+}
+
+.loop-variables-array(@i: length(@variables-array); @data-attribute: ''; @data-attribute-type: '';) when (@i > 0) {
+	.loop-variables-array(@i - 1);
+	@values: extract(@variables-array, @i);
+	@this-value-type: extract(@values, 1);
+	@this-value: extract(@values, 2);
+    // generate data selector CSS
+    .generate-data-attribute(@this-attribute, @this-value, @this-attribute-type, @this-value-type);
+}
+.loop-attributes-array();
+
+@attributes-array:
+    color bgc,
+    color bgc--hover,
+    color bgc--focus,
+    color c,
+    color c--hover,
+    color c--focus,
+
+    font-family font-family,
+
+    font-weight font-weight;
+
+@variables-array: 
+    color color1,
+    color color2,
+    color color3,
+    color color4,
+    color color5,
+    color color1-light,
+    color color2-light,
+    color color3-light,
+    color color4-light,
+    color color5-light,
+    color color1-dark,
+    color color2-dark,
+    color color3-dark,
+    color color4-dark,
+    color color5-dark,
+
+    font-family font1,
+    font-family font2,
+
+    font-weight lighter,
+    font-weight normal,
+    font-weight bold,
+    font-weight bolder;
