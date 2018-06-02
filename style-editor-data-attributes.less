@@ -1,4 +1,4 @@
-.generate-attribute(@attribute-name, @attribute-value, @attribute-name-type, @attribute-value-type) {
+.generate-attributes(@attribute-name, @attribute-value, @attribute-name-type, @attribute-value-type) {
 	[data-se~="@{attribute-name}(@{attribute-value})"] {
 
         // FONT FAMILY DATA TYPES
@@ -13,25 +13,27 @@
 
 		// COLOR DATA TYPES
 		.when-attribute-type-is(color, {
-			// BACKGROUND COLOR
+			// SET BACKGROUND COLOR
           	.when-attribute-name-is(bgc, {
 				background-color: @@attribute-value;
 				color: contrast(@@attribute-value);
           	});
-          	// BACKGROUND COLOR ON HOVER
+          	// CHANGE BACKGROUND COLOR ON HOVER
           	.when-attribute-name-is(bgc--hover, {
 				&:hover {
 					background-color: @@attribute-value;
 					color: contrast(@@attribute-value);
 				}
 			});
-			// BACKGROUND COLOR ON FOCUS
+			// CHANGE BACKGROUND COLOR ON FOCUS
           	.when-attribute-name-is(bgc--focus, {
 				&:focus {
 					background-color: @@attribute-value;
 					color: contrast(@@attribute-value);
 				}
 			});
+			// CHANGE BACKGROUND COLOR ON PARENT ELEMENT HOVER
+			// []:hover [data-se]
           	.when-attribute-name-is(bgc-parent--hover,{
 			    transition: 0.2s;
 			    *:hover > & {
@@ -39,38 +41,39 @@
 			    	color: contrast(@@attribute-value);
 			    }
 			});
-			// BORDER COLOR
+			// SET BORDER COLOR
 			.when-attribute-name-is(bdc, {
 				border-color: @@attribute-value;
 			});
-			// BORDER COLOR ON HOVER
+			// CHANGE BORDER COLOR ON HOVER
 			.when-attribute-name-is(bdc--hover, {
 			    &:hover {
 			    	border-color: @@attribute-value;
 			    }
 			});
-			// BORDER COLOR ON FOCUS
+			// CHANGE BORDER COLOR ON FOCUS
 			.when-attribute-name-is(bdc--focus, {
 			    &:focus {
 			    	border-color: @@attribute-value;
 			    }
 			});
-			// COLOR
+			// SET COLOR
           	.when-attribute-name-is(c, {
 				color: @@attribute-value;
 			});
-			// COLOR ON HOVER
+			// CHANGE COLOR ON HOVER
           	.when-attribute-name-is(c--hover, {
 				&:hover {
 					color: @@attribute-value;
 				}
 			});
-			// COLOR ON FOCUS
+			// CHANGE COLOR ON FOCUS
           	.when-attribute-name-is(c--focus, {
 				&:focus {
 					color: @@attribute-value;
 				}
 			});
+			// CHANGE COLOR OF CHILDREN ON PARENT HOVER
 			// [data-se]:hover > *
           	.when-attribute-name-is(c--hover-children, {
 			    transition: 0.2s;
@@ -80,6 +83,7 @@
 			    	}
 			    }
 			});
+			// CHANGE COLOR ON PARENT HOVER
 			// []:hover > [data-se]
           	.when-attribute-name-is(c-parent--hover, {
 			    transition: 0.2s;
@@ -87,12 +91,14 @@
 			    	color: @@attribute-value;
 			    }
 			});
+			// SET COLOR OF DECENDENT LINKS
 			// [data-se] a
           	.when-attribute-name-is(c_inner-links, {
 			    a {
 			    	color: @@attribute-value;
 			    }
 			});
+			// CHANGE COLOR OF HOVERED DECENDENT LINKS
 			// [data-se] a:hover
           	.when-attribute-name-is(c_inner-links--hover, {
 			    a {
@@ -116,25 +122,25 @@
         @detached-ruleset();
     }
 }
-.loop-attribute-names-array(@i--attribute-names: length(@attribute-names-array)) when (@i--attribute-names > 0) {
-	.loop-attribute-names-array(@i--attribute-names - 1);
-	@attributes: extract(@attribute-names-array, @i--attribute-names);
-	@this-attribute-type: extract(@attributes, 1);
-	@this-attribute: extract(@attributes, 2);
+.loop-attribute-names(@i--attribute-names: length(@data-se-attribute-names-array)) when (@i--attribute-names > 0) {
+	.loop-attribute-names(@i--attribute-names - 1);
+	@this-name-line-vars: extract(@data-se-attribute-names-array, @i--attribute-names);
+	@this-name-type: extract(@this-name-line-vars, 1);
+	@this-name: extract(@this-name-line-vars, 2);
     // call values array loop
-    .loop-attribute-values-array(@attribute-name: @this-attribute; @attribute-name-type: @this-attribute-type);
+    .loop-attribute-values(@attribute-name: @this-name; @attribute-name-type: @this-name-type);
 }
-.loop-attribute-values-array(@i--attribute-values: length(@attribute-values-array); @attribute-name: ''; @attribute-name-type: '';) when (@i--attribute-values > 0) {
-	.loop-attribute-values-array(@i--attribute-values - 1);
-	@values: extract(@attribute-values-array, @i--attribute-values);
-	@this-value-type: extract(@values, 1);
-	@this-value: extract(@values, 2);
+.loop-attribute-values(@i--attribute-values: length(@data-se-attribute-values-array); @attribute-name: ''; @attribute-name-type: '';) when (@i--attribute-values > 0) {
+	.loop-attribute-values(@i--attribute-values - 1);
+	@this-value-line-vars: extract(@data-se-attribute-values-array, @i--attribute-values);
+	@this-value-type: extract(@this-value-line-vars, 1);
+	@this-value: extract(@this-value-line-vars, 2);
     // generate data selector CSS
-    .generate-attribute(@this-attribute, @this-value, @this-attribute-type, @this-value-type);
+    .generate-attributes(@this-name, @this-value, @this-name-type, @this-value-type);
 }
-.loop-attribute-names-array();
+.loop-attribute-names();
 
-@attribute-names-array:
+@data-se-attribute-names-array:
 	// type 	 // name
 
     font-family  font-family,
@@ -148,7 +154,7 @@
     color		 c--hover,
     color		 c--focus;
 
-@attribute-values-array: 
+@data-se-attribute-values-array: 
 	// type 	 // name
 
     font-family  font1,
