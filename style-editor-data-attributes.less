@@ -1,106 +1,185 @@
-.generate-data-attribute(@data-attribute: ''; @data-value: ''; @data-attribute-type: '';@data-value-type: '';) {
-	[data-se~="@{data-attribute}(@{data-value})"] {
-		.when-attribute-and-value-matches(color, {
-			& when (@data-attribute = bgc) {
-				background-color: @@data-value;
-				color: contrast(@@data-value);
-			}
-			& when (@data-attribute = bgc--hover) {
-				&:hover {
-					background-color: @@data-value;
-					color: contrast(@@data-value);
-				}
-			}
-			& when (@data-attribute = bgc--focus) {
-				&:focus {
-					background-color: @@data-value;
-					color: contrast(@@data-value);
-				}
-			}
-			& when (@data-attribute = c) {
-				color: @@data-value;
-			}
-			& when (@data-attribute = c--hover) {
-				&:hover {
-					color: @@data-value;
-				}
-			}
-			& when (@data-attribute = c--focus) {
-				&:focus {
-					color: @@data-value;
-				}
-			}
+.generate-attribute(@attribute-name, @attribute-value, @attribute-name-type, @attribute-value-type) {
+	[data-se~="@{attribute-name}(@{attribute-value})"] {
+
+        // FONT FAMILY DATA TYPES
+		.when-attribute-type-is(font-family, {
+			font-family: @@attribute-value;
         });
-		.when-attribute-and-value-matches(font-family, {
-			font-family: @@data-value;
+
+        // FONT WEIGHT DATA TYPES
+		.when-attribute-type-is(font-weight, {
+			font-weight: @attribute-value;
         });
-		.when-attribute-and-value-matches(font-weight, {
-			font-weight: @data-value;
+
+		// COLOR DATA TYPES
+		.when-attribute-type-is(color, {
+			// BACKGROUND COLOR
+          	.when-attribute-name-is(bgc, {
+				background-color: @@attribute-value;
+				color: contrast(@@attribute-value);
+          	});
+          	// BACKGROUND COLOR ON HOVER
+          	.when-attribute-name-is(bgc--hover, {
+				&:hover {
+					background-color: @@attribute-value;
+					color: contrast(@@attribute-value);
+				}
+			});
+			// BACKGROUND COLOR ON FOCUS
+          	.when-attribute-name-is(bgc--focus, {
+				&:focus {
+					background-color: @@attribute-value;
+					color: contrast(@@attribute-value);
+				}
+			});
+          	.when-attribute-name-is(bgc-parent--hover,{
+			    transition: 0.2s;
+			    *:hover > & {
+			    	background-color: @@attribute-value;
+			    	color: contrast(@@attribute-value);
+			    }
+			});
+			// BORDER COLOR
+			.when-attribute-name-is(bdc, {
+				border-color: @@attribute-value;
+			});
+			// BORDER COLOR ON HOVER
+			.when-attribute-name-is(bdc--hover, {
+			    &:hover {
+			    	border-color: @@attribute-value;
+			    }
+			});
+			// BORDER COLOR ON FOCUS
+			.when-attribute-name-is(bdc--focus, {
+			    &:focus {
+			    	border-color: @@attribute-value;
+			    }
+			});
+			// COLOR
+          	.when-attribute-name-is(c, {
+				color: @@attribute-value;
+			});
+			// COLOR ON HOVER
+          	.when-attribute-name-is(c--hover, {
+				&:hover {
+					color: @@attribute-value;
+				}
+			});
+			// COLOR ON FOCUS
+          	.when-attribute-name-is(c--focus, {
+				&:focus {
+					color: @@attribute-value;
+				}
+			});
+			// [data-se]:hover > *
+          	.when-attribute-name-is(c--hover-children, {
+			    transition: 0.2s;
+			    &:hover {
+			    	> * {
+			        	color: @@attribute-value;
+			    	}
+			    }
+			});
+			// []:hover > [data-se]
+          	.when-attribute-name-is(c-parent--hover, {
+			    transition: 0.2s;
+			    *:hover > & {
+			    	color: @@attribute-value;
+			    }
+			});
+			// [data-se] a
+          	.when-attribute-name-is(c_inner-links, {
+			    a {
+			    	color: @@attribute-value;
+			    }
+			});
+			// [data-se] a:hover
+          	.when-attribute-name-is(c_inner-links--hover, {
+			    a {
+			      	&:hover {
+			        	color: @@attribute-value;
+			      	}
+			    }
+			});
         });
 	}
 }
-.when-attribute-and-value-matches(@phrase:''; @detached-ruleset: {};){
-	& when (@data-attribute-type = @phrase){
-		& when (@data-value-type = @phrase){
+.when-attribute-type-is(@type; @detached-ruleset: {};){
+	& when (@attribute-name-type = @type){
+		& when (@attribute-value-type = @type){
 			@detached-ruleset();
 		}
 	}
 };
-
-
-
-.loop-attributes-array(@attributes-i: length(@attributes-array)) when (@attributes-i > 0) {
-	.loop-attributes-array(@attributes-i - 1);
-	@attributes: extract(@attributes-array, @attributes-i);
+.when-attribute-name-is(@name; @detached-ruleset: {};) {
+	& when (@attribute-name = @name){
+        @detached-ruleset();
+    }
+}
+.loop-attribute-names-array(@i--attribute-names: length(@attribute-names-array)) when (@i--attribute-names > 0) {
+	.loop-attribute-names-array(@i--attribute-names - 1);
+	@attributes: extract(@attribute-names-array, @i--attribute-names);
 	@this-attribute-type: extract(@attributes, 1);
 	@this-attribute: extract(@attributes, 2);
-    // call colors array loop mixin
-    .loop-variables-array(@data-attribute: @this-attribute; @data-attribute-type: @this-attribute-type);
+    // call values array loop
+    .loop-attribute-values-array(@attribute-name: @this-attribute; @attribute-name-type: @this-attribute-type);
 }
-
-.loop-variables-array(@i: length(@variables-array); @data-attribute: ''; @data-attribute-type: '';) when (@i > 0) {
-	.loop-variables-array(@i - 1);
-	@values: extract(@variables-array, @i);
+.loop-attribute-values-array(@i--attribute-values: length(@attribute-values-array); @attribute-name: ''; @attribute-name-type: '';) when (@i--attribute-values > 0) {
+	.loop-attribute-values-array(@i--attribute-values - 1);
+	@values: extract(@attribute-values-array, @i--attribute-values);
 	@this-value-type: extract(@values, 1);
 	@this-value: extract(@values, 2);
     // generate data selector CSS
-    .generate-data-attribute(@this-attribute, @this-value, @this-attribute-type, @this-value-type);
+    .generate-attribute(@this-attribute, @this-value, @this-attribute-type, @this-value-type);
 }
-.loop-attributes-array();
+.loop-attribute-names-array();
 
-@attributes-array:
-    color bgc,
-    color bgc--hover,
-    color bgc--focus,
-    color c,
-    color c--hover,
-    color c--focus,
+@attribute-names-array:
+	// type 	 // name
 
-    font-family font-family,
+    font-family  font-family,
 
-    font-weight font-weight;
+    font-weight  font-weight,
 
-@variables-array: 
-    color color1,
-    color color2,
-    color color3,
-    color color4,
-    color color5,
-    color color1-light,
-    color color2-light,
-    color color3-light,
-    color color4-light,
-    color color5-light,
-    color color1-dark,
-    color color2-dark,
-    color color3-dark,
-    color color4-dark,
-    color color5-dark,
+    color		 bgc,
+    color		 bgc--hover,
+    color		 bgc--focus,
+    color		 c,
+    color		 c--hover,
+    color		 c--focus;
 
-    font-family font1,
-    font-family font2,
+@attribute-values-array: 
+	// type 	 // name
 
-    font-weight lighter,
-    font-weight normal,
-    font-weight bold,
-    font-weight bolder;
+    font-family  font1,
+    font-family  font2,
+
+    font-weight  lighter,
+    font-weight  normal,
+    font-weight  bold,
+    font-weight  bolder,
+
+    color		 text-color,
+	color		 clear,
+	color		 black,
+	color		 gray-darker,
+	color		 gray-dark,
+	color		 gray,
+	color		 gray-light,
+	color		 gray-lighter,
+	color		 white,
+    color		 color1,
+    color		 color2,
+    color		 color3,
+    color		 color4,
+    color		 color5,
+    color		 color1-light,
+    color		 color2-light,
+    color		 color3-light,
+    color		 color4-light,
+    color		 color5-light,
+    color		 color1-dark,
+    color		 color2-dark,
+    color		 color3-dark,
+    color		 color4-dark,
+    color		 color5-dark;
