@@ -1,4 +1,4 @@
-.generate-attributes(@attribute-name, @attribute-value, @attribute-name-type, @attribute-value-type) {
+.generate-data-se-code(@attribute-name, @attribute-value, @attribute-name-type, @attribute-value-type) {
 	[data-se~="@{attribute-name}(@{attribute-value})"] {
 
         // FONT FAMILY DATA TYPES
@@ -124,19 +124,19 @@
 }
 .loop-attribute-names(@i--attribute-names: length(@data-se-attribute-names-array)) when (@i--attribute-names > 0) {
 	.loop-attribute-names(@i--attribute-names - 1);
-	@this-name-line-vars: extract(@data-se-attribute-names-array, @i--attribute-names);
-	@this-name-type: extract(@this-name-line-vars, 1);
-	@this-name: extract(@this-name-line-vars, 2);
+	@this-line-name-vars: extract(@data-se-attribute-names-array, @i--attribute-names);
+	@this-name-type: extract(@this-line-name-vars, 1);
+	@this-name: extract(@this-line-name-vars, 2);
     // call values array loop
     .loop-attribute-values(@attribute-name: @this-name; @attribute-name-type: @this-name-type);
 }
 .loop-attribute-values(@i--attribute-values: length(@data-se-attribute-values-array); @attribute-name: ''; @attribute-name-type: '';) when (@i--attribute-values > 0) {
 	.loop-attribute-values(@i--attribute-values - 1);
-	@this-value-line-vars: extract(@data-se-attribute-values-array, @i--attribute-values);
-	@this-value-type: extract(@this-value-line-vars, 1);
-	@this-value: extract(@this-value-line-vars, 2);
+	@this-line-value-vars: extract(@data-se-attribute-values-array, @i--attribute-values);
+	@this-value-type: extract(@this-line-value-vars, 1);
+	@this-value: extract(@this-line-value-vars, 2);
     // generate data selector CSS
-    .generate-attributes(@this-name, @this-value, @this-name-type, @this-value-type);
+    .generate-data-se-code(@this-name, @this-value, @this-name-type, @this-value-type);
 }
 .loop-attribute-names();
 
