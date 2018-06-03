@@ -122,19 +122,20 @@
         @detached-ruleset();
     }
 }
-.loop-attribute-names(@i--attribute-names: length(@data-se-attribute-names-list)) when (@i--attribute-names > 0) {
-	.loop-attribute-names(@i--attribute-names - 1);
+.loop-attribute-names-list(@i--attribute-names: length(@data-se-attribute-names-list)) when (@i--attribute-names > 0) {
+	.loop-attribute-names-list(@i--attribute-names - 1);
 	@this-line-name-vars: extract(@data-se-attribute-names-list, @i--attribute-names);
 	@this-name-type: extract(@this-line-name-vars, 1);
 	@this-name: extract(@this-line-name-vars, 2);
-    // run loop of default values list
-    .run-loop-of-attribute-values(@list-to-loop: @data-se-attribute-values-list);
-    // run loop of extended values list
-    .run-loop-of-attribute-values(@list-to-loop: @extend-data-se-attribute-values-list);
+
+    // Run loop of default values list
+    .run-loop-of-attribute-values-list(@list-to-loop: @data-se-attribute-values-list);
+    // Run loop of extended values list
+    .run-loop-of-attribute-values-list(@list-to-loop: @extend-data-se-attribute-values-list);
 }
-.run-loop-of-attribute-values(@list-to-loop: @data-se-attribute-values-list;  @attribute-name: @this-name; @attribute-name-type: @this-name-type) {
-    .loop-attribute-values(@i--attribute-values: length(@list-to-loop);) when (@i--attribute-values > 0) {
-        .loop-attribute-values(@i--attribute-values - 1);
+.run-loop-of-attribute-values-list(@list-to-loop: @data-se-attribute-values-list;  @attribute-name: @this-name; @attribute-name-type: @this-name-type) {
+    .loop-attribute-values-list(@i--attribute-values: length(@list-to-loop);) when (@i--attribute-values > 0) {
+        .loop-attribute-values-list(@i--attribute-values - 1);
         @this-line-value-vars: extract(@list-to-loop, @i--attribute-values);
         @this-value-type: extract(@this-line-value-vars, 1);
         @this-value: extract(@this-line-value-vars, 2);
@@ -142,9 +143,8 @@
         @length-of-list: length(@list-to-loop);
 		.generate-code-from-extended-values-variable-if-valid(@this-value-type, @this-value, @length-of-list);
     }
-	.loop-attribute-values();
+	.loop-attribute-values-list();
 }
-
 .generate-code-from-extended-values-variable-if-valid(@value-type, @value, @length-of-list) {
 	@failure-state: ~"extract(@{value-type}, @{length-of-list})";
     & when not (@value = @failure-state) {
@@ -152,7 +152,9 @@
       .generate-data-se-code(@this-name, @this-value, @this-name-type, @this-value-type);
     }
 }
-.loop-attribute-names();
+
+// Run loops over both lists and generate code
+.loop-attribute-names-list();
 
 @data-se-attribute-names-list:
 	// type 	 // name
