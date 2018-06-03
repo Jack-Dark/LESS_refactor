@@ -137,8 +137,13 @@
         @this-line-value-vars: extract(@list-to-loop, @i--attribute-values);
         @this-value-type: extract(@this-line-value-vars, 1);
         @this-value: extract(@this-line-value-vars, 2);
-        // generate data selector CSS
-        .generate-data-se-code(@this-name, @this-value, @this-name-type, @this-value-type);
+
+        @loop-length: length(@list-to-loop);
+        @failure-state: ~"extract(@{this-value-type}, @{loop-length})";
+        & when not (@this-value = @failure-state) {
+          // generate data selector CSS
+          .generate-data-se-code(@this-name, @this-value, @this-name-type, @this-value-type);
+        }
     }
 	.loop-attribute-values();
 }
