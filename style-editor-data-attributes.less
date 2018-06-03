@@ -122,17 +122,17 @@
         @detached-ruleset();
     }
 }
-.loop-attribute-names(@i--attribute-names: length(@data-se-attribute-names-array)) when (@i--attribute-names > 0) {
+.loop-attribute-names(@i--attribute-names: length(@data-se-attribute-names-list)) when (@i--attribute-names > 0) {
 	.loop-attribute-names(@i--attribute-names - 1);
-	@this-line-name-vars: extract(@data-se-attribute-names-array, @i--attribute-names);
+	@this-line-name-vars: extract(@data-se-attribute-names-list, @i--attribute-names);
 	@this-name-type: extract(@this-line-name-vars, 1);
 	@this-name: extract(@this-line-name-vars, 2);
-    // run loop of default values array
-    .run-loop-of-attribute-values(@list-to-loop: @data-se-attribute-values-array);
-    // run loop of extended values array
-    .run-loop-of-attribute-values(@list-to-loop: @extend-data-se-attribute-values-array);
+    // run loop of default values list
+    .run-loop-of-attribute-values(@list-to-loop: @data-se-attribute-values-list);
+    // run loop of extended values list
+    .run-loop-of-attribute-values(@list-to-loop: @extend-data-se-attribute-values-list);
 }
-.run-loop-of-attribute-values(@list-to-loop: @data-se-attribute-values-array;  @attribute-name: @this-name; @attribute-name-type: @this-name-type) {
+.run-loop-of-attribute-values(@list-to-loop: @data-se-attribute-values-list;  @attribute-name: @this-name; @attribute-name-type: @this-name-type) {
     .loop-attribute-values(@i--attribute-values: length(@list-to-loop);) when (@i--attribute-values > 0) {
         .loop-attribute-values(@i--attribute-values - 1);
         @this-line-value-vars: extract(@list-to-loop, @i--attribute-values);
@@ -154,7 +154,7 @@
 }
 .loop-attribute-names();
 
-@data-se-attribute-names-array:
+@data-se-attribute-names-list:
 	// type 	 // name
 
     font-family  font-family,
@@ -178,7 +178,7 @@
     color		 c_inner-links,
     color		 c_inner-links--hover;
 
-@data-se-attribute-values-array: 
+@data-se-attribute-values-list: 
 	// type 	 // name
 
     font-family  font1,
@@ -215,4 +215,4 @@
     color		 color5-dark;
 
 // Variable that can be called in src files to add new [data-se] attributes
-@extend-data-se-attribute-values-array:'',;
+@extend-data-se-attribute-values-list:'',;
