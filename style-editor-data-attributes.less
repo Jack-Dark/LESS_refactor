@@ -128,15 +128,19 @@
 	@this-name-type: extract(@this-line-name-vars, 1);
 	@this-name: extract(@this-line-name-vars, 2);
     // call values array loop
-    .loop-attribute-values(@attribute-name: @this-name; @attribute-name-type: @this-name-type);
+    .run-loop-of-attribute-values(@list-to-loop: @data-se-attribute-values-array);
+    .run-loop-of-attribute-values(@list-to-loop: @extend-data-se-attribute-values-array);
 }
-.loop-attribute-values(@i--attribute-values: length(@data-se-attribute-values-array); @attribute-name: ''; @attribute-name-type: '';) when (@i--attribute-values > 0) {
-	.loop-attribute-values(@i--attribute-values - 1);
-	@this-line-value-vars: extract(@data-se-attribute-values-array, @i--attribute-values);
-	@this-value-type: extract(@this-line-value-vars, 1);
-	@this-value: extract(@this-line-value-vars, 2);
-    // generate data selector CSS
-    .generate-data-se-code(@this-name, @this-value, @this-name-type, @this-value-type);
+.run-loop-of-attribute-values(@list-to-loop: @data-se-attribute-values-array;  @attribute-name: @this-name; @attribute-name-type: @this-name-type) {
+    .loop-attribute-values(@i--attribute-values: length(@list-to-loop);) when (@i--attribute-values > 0) {
+        .loop-attribute-values(@i--attribute-values - 1);
+        @this-line-value-vars: extract(@list-to-loop, @i--attribute-values);
+        @this-value-type: extract(@this-line-value-vars, 1);
+        @this-value: extract(@this-line-value-vars, 2);
+        // generate data selector CSS
+        .generate-data-se-code(@this-name, @this-value, @this-name-type, @this-value-type);
+    }
+	.loop-attribute-values();
 }
 .loop-attribute-names();
 
@@ -198,9 +202,7 @@
     color		 color2-dark,
     color		 color3-dark,
     color		 color4-dark,
-    color		 color5-dark,
-  	// Variable that can be called in src files to add new code
-  	@extend-data-se-attribute-values-array;
+    color		 color5-dark;
 
-// Declares default empty variable
+// Variable that can be called in src files to add new [data-se] attributes
 @extend-data-se-attribute-values-array:;
