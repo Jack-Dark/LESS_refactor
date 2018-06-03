@@ -127,8 +127,9 @@
 	@this-line-name-vars: extract(@data-se-attribute-names-array, @i--attribute-names);
 	@this-name-type: extract(@this-line-name-vars, 1);
 	@this-name: extract(@this-line-name-vars, 2);
-    // call values array loop
+    // run loop of default values array
     .run-loop-of-attribute-values(@list-to-loop: @data-se-attribute-values-array);
+    // run loop of extended values array
     .run-loop-of-attribute-values(@list-to-loop: @extend-data-se-attribute-values-array);
 }
 .run-loop-of-attribute-values(@list-to-loop: @data-se-attribute-values-array;  @attribute-name: @this-name; @attribute-name-type: @this-name-type) {
